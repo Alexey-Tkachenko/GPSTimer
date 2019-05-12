@@ -1,0 +1,7 @@
+.vs/
+__vm/
+Release/
+Debug/
+bin/
+obj/
+packages/

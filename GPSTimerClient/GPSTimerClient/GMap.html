@@ -1,0 +1,77 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="x-ua-compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+        html {
+            height: 100%;
+        }
+
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            height: 100%;
+        }
+    </style>
+    <script src="https://api-maps.yandex.ru/2.0/?load=package.standard&lang=ru-RU" type="text/javascript"></script>
+    <script type="text/javascript">
+        var myMap;
+
+        var data =
+            "###"
+        ;
+
+        ymaps.ready(init);
+
+        function init() {
+            myMap = new ymaps.Map('map', {
+                center: [53.91, 27.55],
+                zoom: 8
+            }, {
+                searchControlProvider: 'yandex#search'
+            });
+
+            myMap.controls
+                .add('zoomControl', { left: 5, top: 5 })
+                .add('typeSelector')
+                .add('mapTools', { left: 35, top: 5 });
+
+            myMap.controls
+                .add(new ymaps.control.MiniMap({
+                    type: 'yandex#publicMap'
+                }));
+
+            if ("bounds" in data) {
+                myMap.setBounds([data.bounds.a, data.bounds.b]);
+            } else if ("center" in data) {
+                myMap.panTo(data.center);
+            }
+
+            if ("points" in data) {
+                for (var i in data.points) {
+                    var p = data.points[i];
+                    var pm = new ymaps.Placemark([p.lat, p.lon], {
+                        iconContent: '#' + p.offset,
+                        balloonContent: '' + p.lat + ' ' + p.lon + ' ' + p.alt + "\n" +
+                            p.time + "\n" +
+                            p.type,
+                        hintContent: '' + p.lat + ' ' + p.lon + ' ' + p.alt
+                    }, {
+                        preset: p.type = 'Rising' ? 'twirl#violetIcon' : 'twirl#redIcon'
+                    });
+                    myMap.geoObjects.add(pm);
+                }
+            }
+        }
+
+    </script>
+</head>
+<body>
+    <div id="map"></div>
+</body>
+</html>
